@@ -1,7 +1,7 @@
 import pygame
 from maze import Maze
 from player import Player
-from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK
+from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK , BLUE
 
 # Initialize Pygame
 pygame.init()
@@ -18,7 +18,7 @@ player = Player()
 # Game Loop
 running = True
 has_won = False
-game_message = "Try to escape!"
+# game_message = "Try to escape!"
 
 while running:
     screen.fill(BLACK)
@@ -28,13 +28,13 @@ while running:
 
     # Display keys collected count
     keys_text = f"Keys: {len(player.collected_keys)}/{maze.num_keys}"
-    keys_surface = font.render(keys_text, True, (255, 255, 255))
+    keys_surface = font.render(keys_text, True, BLUE)
     screen.blit(keys_surface, (10, 10))
 
     # Display game message if any
-    if game_message:
-        message_surface = font.render(game_message, True, (255, 255, 0))
-        screen.blit(message_surface, (WIDTH // 2 - message_surface.get_width() // 2, 10))
+    # if game_message:
+    #     message_surface = font.render(game_message, True, (255, 255, 0))
+    #     screen.blit(message_surface, (WIDTH // 2 - message_surface.get_width() // 2, 10))
 
     pygame.display.flip()
 

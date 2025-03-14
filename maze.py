@@ -53,17 +53,20 @@ class Maze:
 
         return keys
 
-    def draw_maze(self, screen, collected_keys, player):
-        # Draw maze grid
+    def draw_maze(self, screen, collected_keys, player, y_offset = 0):
+        # Draw maze grid with an offset
         for y in range(self.rows):
             for x in range(self.cols):
-                color = BLACK if self.maze[y][x] == 0 else WHITE
-                pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+                color = WHITE if self.maze[y][x] == 0 else BLACK
+                pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE + y_offset, CELL_SIZE, CELL_SIZE))
+
+        # # Draw the separator (a black bar at the top)
+        # pygame.draw.rect(screen, BLACK, (0, 0, self.cols * CELL_SIZE, y_offset))
 
         # Draw exit
         exit_image = pygame.image.load("exit.png")
         exit_image = pygame.transform.scale(exit_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE, self.end_pos[1] * CELL_SIZE))
+        screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE, self.end_pos[1] * CELL_SIZE ))
 
         # Draw keys that haven't been collected yet
         key_image = pygame.image.load("key.png")
@@ -71,12 +74,12 @@ class Maze:
 
         for i, key_pos in enumerate(self.key_positions):
             if i not in collected_keys:  # Only draw keys that haven't been collected
-                screen.blit(key_image, (key_pos[0] * CELL_SIZE, key_pos[1] * CELL_SIZE))
+                screen.blit(key_image, (key_pos[0] * CELL_SIZE, key_pos[1] * CELL_SIZE ))
 
         # Draw player
         bot_image = pygame.image.load("robot.png")
         bot_image = pygame.transform.scale(bot_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(bot_image, (player.x * CELL_SIZE, player.y * CELL_SIZE))
+        screen.blit(bot_image, (player.x * CELL_SIZE, player.y * CELL_SIZE ))
 
     def is_valid_move(self, x, y):
         return 0 <= x < self.cols and 0 <= y < self.rows and self.maze[y][x] == 0
