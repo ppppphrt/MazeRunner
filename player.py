@@ -1,12 +1,8 @@
-import pygame
-from constant import ROWS, COLS
-
 class Player:
-
     def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
-        self.has_key = False
+        self.collected_keys = set()  # Use a set to track which keys have been collected
 
     def move(self, dx, dy, maze):
         new_x, new_y = self.x + dx, self.y + dy
@@ -15,11 +11,18 @@ class Player:
             return True
         return False
 
-    def collect_key(self, key_pos):
-        if key_pos and (self.x, self.y) == key_pos:
-            self.has_key = True
-            return True
-        return False
+    def check_key_collection(self, maze):
+        """Check if player is on a key position and collect it if so"""
+        for i, key_pos in enumerate(maze.key_positions):
+            if (self.x, self.y) == key_pos and i not in self.collected_keys:
+                self.collected_keys.add(i)
+                return i  # Return the index of the collected key
+        return None
+
+    def has_all_keys(self, maze):
+        """Check if player has collected all keys"""
+        return len(self.collected_keys) == maze.num_keys
 
     def reached_end(self, end_pos):
+        """Check if player has reached the end position"""
         return (self.x, self.y) == end_pos

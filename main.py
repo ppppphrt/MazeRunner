@@ -8,23 +8,33 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Maze Runner")
 
-# Create Maze and Player
-maze = Maze(ROWS, COLS)
-player = Player()
+# Create font for displaying messages
+font = pygame.font.SysFont('Arial', 24)
 
-# Get maze data
-key_pos = maze.place_random_item(1)[0] if maze.place_random_item(1) else None
-# End position is now a property of the maze object
-end_pos = maze.end_pos
+# Create Maze and Player
+maze = Maze(ROWS, COLS, num_keys=3)  # Specify 3 keys
+player = Player()
 
 # Game Loop
 running = True
 has_won = False
+game_message = "Try to escape!"
+
 while running:
     screen.fill(BLACK)
 
-    # Draw maze and components (now includes drawing the end position)
-    maze.draw_maze(screen, key_pos if not player.has_key else None, player)
+    # Draw maze and components
+    maze.draw_maze(screen, player.collected_keys, player)
+
+    # Display keys collected count
+    keys_text = f"Keys: {len(player.collected_keys)}/{maze.num_keys}"
+    keys_surface = font.render(keys_text, True, (255, 255, 255))
+    screen.blit(keys_surface, (10, 10))
+
+    # Display game message if any
+    if game_message:
+        message_surface = font.render(game_message, True, (255, 255, 0))
+        screen.blit(message_surface, (WIDTH // 2 - message_surface.get_width() // 2, 10))
 
     pygame.display.flip()
 
@@ -47,14 +57,17 @@ while running:
             if maze.is_valid_move(new_x, new_y):
                 player.x, player.y = new_x, new_y
 
-                # Check if player collects the key
-                if key_pos is not None and (player.x, player.y) == key_pos:
-                    player.has_key = True
-                    key_pos = None
+                # Check if player collects a key
+                key_collected = player.check_key_collection(maze)
+                if key_collected is not None:
+                    game_message = f"Key {key_collected + 1} collected! {maze.num_keys - len(player.collected_keys)} remaining."
 
-                # Check if player reaches the end with the key
-                if (player.x, player.y) == end_pos and player.has_key:
-                    has_won = True
-                    print("You've won!")
+                # Check if player reaches the end with all keys
+                if player.reached_end(maze.end_pos):
+                    if player.has_all_keys(maze):
+                        has_won = True
+                        game_message = "You've escaped the maze!"
+                    else:
+                        game_message = f"You need all {maze.num_keys} keys to exit!"
 
 pygame.quit()
