@@ -9,36 +9,52 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Maze Runner")
 
 # Create Maze and Player
-maze = Maze(ROWS, COLS)  # Pass required parameters
+maze = Maze(ROWS, COLS)
 player = Player()
 
 # Get maze data
-maze_data = maze.generate_maze_backtracking()
-key_pos = maze.place_random_item(1)[0]  # Place a single key
-# obstacles = maze.place_random_item(10)  # Place obstacles
+key_pos = maze.place_random_item(1)[0] if maze.place_random_item(1) else None
+# End position is now a property of the maze object
+end_pos = maze.end_pos
 
 # Game Loop
 running = True
+has_won = False
 while running:
     screen.fill(BLACK)
-    maze.draw_maze(screen, key_pos, player)  # Call draw from Maze class
+
+    # Draw maze and components (now includes drawing the end position)
+    maze.draw_maze(screen, key_pos if not player.has_key else None, player)
+
     pygame.display.flip()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                player.move(0, -1, maze_data)
-            elif event.key == pygame.K_DOWN:
-                player.move(0, 1, maze_data)
-            elif event.key == pygame.K_LEFT:
-                player.move(-1, 0, maze_data)
-            elif event.key == pygame.K_RIGHT:
-                player.move(1, 0, maze_data)
+        elif event.type == pygame.KEYDOWN and not has_won:
+            new_x, new_y = player.x, player.y
 
-        # Check if player collects the key
-        if key_pos is not None and player.collect_key(key_pos):
-            key_pos = None
+            if event.key == pygame.K_UP:
+                new_y -= 1
+            elif event.key == pygame.K_DOWN:
+                new_y += 1
+            elif event.key == pygame.K_LEFT:
+                new_x -= 1
+            elif event.key == pygame.K_RIGHT:
+                new_x += 1
+
+            # Check if move is valid
+            if maze.is_valid_move(new_x, new_y):
+                player.x, player.y = new_x, new_y
+
+                # Check if player collects the key
+                if key_pos is not None and (player.x, player.y) == key_pos:
+                    player.has_key = True
+                    key_pos = None
+
+                # Check if player reaches the end with the key
+                if (player.x, player.y) == end_pos and player.has_key:
+                    has_won = True
+                    print("You've won!")
 
 pygame.quit()

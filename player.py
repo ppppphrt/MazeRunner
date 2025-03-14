@@ -2,23 +2,24 @@ import pygame
 from constant import ROWS, COLS
 
 class Player:
-    def __init__(self):
-        self.x, self.y = 0, 0  # Start position
-        self.has_key = False  # Track if player collected the key
+
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+        self.has_key = False
 
     def move(self, dx, dy, maze):
-        """Move player if the destination is an open path (0 in the maze)."""
         new_x, new_y = self.x + dx, self.y + dy
-        if 0 <= new_x < COLS and 0 <= new_y < ROWS and maze[new_y][new_x] == 0:
+        if maze.is_valid_move(new_x, new_y):
             self.x, self.y = new_x, new_y
+            return True
+        return False
 
     def collect_key(self, key_pos):
-        """Check if the player collects the key."""
-        if (self.x, self.y) == key_pos:
+        if key_pos and (self.x, self.y) == key_pos:
             self.has_key = True
-            return True  # Key collected
+            return True
         return False
 
     def reached_end(self, end_pos):
-        """Check if player reached the exit."""
         return (self.x, self.y) == end_pos
