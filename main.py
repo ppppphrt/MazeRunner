@@ -1,11 +1,16 @@
 import pygame
 from maze import Maze
 from player import Player
-from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK , BLUE
+from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE
 
 # Initialize Pygame
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.font.init()  # Ensure fonts are initialized
+
+
+# Increase window width to add a side panel
+PANEL_WIDTH = 200  # Space for UI elements
+screen = pygame.display.set_mode((WIDTH + PANEL_WIDTH, HEIGHT))  # Wider screen
 pygame.display.set_caption("Maze Runner")
 
 # Create font for displaying messages
@@ -18,23 +23,26 @@ player = Player()
 # Game Loop
 running = True
 has_won = False
-# game_message = "Try to escape!"
+game_message = "Try to escape!"
 
 while running:
     screen.fill(BLACK)
 
-    # Draw maze and components
+    # Draw maze in its original area
     maze.draw_maze(screen, player.collected_keys, player)
 
-    # Display keys collected count
+    # Draw Side Panel Background
+    pygame.draw.rect(screen, (40, 40, 40), (WIDTH, 0, PANEL_WIDTH, HEIGHT))  # Dark gray sidebar
+
+    # Display keys collected count in the side panel
     keys_text = f"Keys: {len(player.collected_keys)}/{maze.num_keys}"
     keys_surface = font.render(keys_text, True, BLUE)
-    screen.blit(keys_surface, (10, 10))
+    screen.blit(keys_surface, (WIDTH + 20, 20))  # Position inside the panel
 
-    # Display game message if any
-    # if game_message:
-    #     message_surface = font.render(game_message, True, (255, 255, 0))
-    #     screen.blit(message_surface, (WIDTH // 2 - message_surface.get_width() // 2, 10))
+    # Display game message in the side panel
+    if game_message:
+        message_surface = font.render(game_message, True, (255, 255, 0))
+        screen.blit(message_surface, (WIDTH + 20, 60))  # Message below keys count
 
     pygame.display.flip()
 

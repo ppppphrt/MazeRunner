@@ -60,8 +60,6 @@ class Maze:
                 color = WHITE if self.maze[y][x] == 0 else BLACK
                 pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE + y_offset, CELL_SIZE, CELL_SIZE))
 
-        # # Draw the separator (a black bar at the top)
-        # pygame.draw.rect(screen, BLACK, (0, 0, self.cols * CELL_SIZE, y_offset))
 
         # Draw exit
         exit_image = pygame.image.load("exit.png")
