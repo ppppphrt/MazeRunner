@@ -13,9 +13,9 @@ except:
     print("Font file 'PixeloidSans-mLxMm.ttf' not found!")
     sys.exit()
 
-# Create screen
-screen = pygame.display.set_mode((constant.WIDTH, constant.HEIGHT))
-pygame.display.set_caption("Maze Runner")
+# # Create screen
+# screen = pygame.display.set_mode((constant.WIDTH, constant.HEIGHT))
+# pygame.display.set_caption("Maze Runner")
 
 # Button Class
 class Button:
@@ -38,32 +38,4 @@ class Button:
     def is_clicked(self, event):
         return event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos)
 
-# Create buttons
-start_button = Button("START", constant.WIDTH // 2 - 100, 300, 200, 60, constant.BLUE, constant.DARK_BLUE)
-rank_button = Button("RANK", constant.WIDTH // 2 - 100, 400, 200, 60, constant.BLUE, constant.DARK_BLUE)
 
-# Main Menu Loop
-running = True
-while running:
-    screen.fill(constant.GRAY)  # Background color
-
-    # Title
-    title_surface = font.render("MAZE RUNNER", True, constant.WHITE)
-    screen.blit(title_surface, (constant.WIDTH // 2 - title_surface.get_width() // 2, 150))
-
-    # Draw buttons
-    start_button.draw(screen)
-    rank_button.draw(screen)
-
-    pygame.display.flip()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif start_button.is_clicked(event):
-            print("Start Game!")  # Replace this with game start logic
-            running = False
-        elif rank_button.is_clicked(event):
-            print("Show Rankings!")  # Replace this with ranking screen logic
-
-pygame.quit()
