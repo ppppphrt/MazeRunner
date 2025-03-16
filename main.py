@@ -2,8 +2,9 @@ import pygame
 import sys
 from maze import Maze
 from player import Player
-from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE
+from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE , YELLOW
 from front_page import Button
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -19,7 +20,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Maze Runner")
 
 # Create font
-font = pygame.font.SysFont('PixeloidSans-mLxMm.ttf', 24)
+font = pygame.font.SysFont('PixeloidSans-mLxMm.ttf', 20)
 
 # Create Buttons for the menu
 start_button = Button("START", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
@@ -54,6 +55,9 @@ def run_game():
     running = True
     has_won = False
     game_message = "Try to escape!"
+    start_time = time.time()
+    elapsed_time = 0
+    timer_running = True
 
     while running:
         screen.fill(BLACK)
@@ -64,15 +68,22 @@ def run_game():
         # Draw Side Panel
         pygame.draw.rect(screen, (40, 40, 40), (WIDTH, 0, PANEL_WIDTH, HEIGHT))  # Dark gray sidebar
 
+        # Display game timer
+        if timer_running:
+            elapsed_time = int(time.time() - start_time)  # Convert to integer seconds
+        time_text = f"Time: {elapsed_time} s"
+        time_surface = font.render(time_text, True, YELLOW)
+        screen.blit(time_surface, (WIDTH + 20, 20))
+
         # Display keys collected count
         keys_text = f"Keys: {len(player.collected_keys)}/{maze.num_keys}"
-        keys_surface = font.render(keys_text, True, BLUE)
-        screen.blit(keys_surface, (WIDTH + 20, 20))
+        keys_surface = font.render(keys_text, True, YELLOW)
+        screen.blit(keys_surface, (WIDTH + 20, 60))
 
         # Display game message
         if game_message:
             message_surface = font.render(game_message, True, (255, 255, 0))
-            screen.blit(message_surface, (WIDTH + 20, 60))
+            screen.blit(message_surface, (WIDTH + 20, 100))
 
         pygame.display.flip()
 
@@ -105,6 +116,7 @@ def run_game():
                         if player.has_all_keys(maze):
                             has_won = True
                             game_message = "You've escaped the maze!"
+                            timer_running = False
                         else:
                             game_message = f"You need all {maze.num_keys} keys to exit!"
 
