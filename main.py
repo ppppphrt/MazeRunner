@@ -1,5 +1,9 @@
+import random
+
 import pygame
 import sys
+
+from Enemy import Enemy
 from maze import Maze
 from player import Player
 from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE , YELLOW
@@ -25,6 +29,10 @@ font = pygame.font.SysFont('PixeloidSans-mLxMm.ttf', 20)
 # Create Buttons for the menu
 start_button = Button("START", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
 rank_button = Button("RANK", SCREEN_WIDTH // 2 - 100, 400, 200, 60, BLUE, DARK_BLUE)
+
+# create enemies
+enemies = [Enemy(random.randint(0, COLS - 1), random.randint(0, ROWS - 1)) for _ in range(3)]  # 3 enemies
+
 
 def show_menu():
     """ Display the main menu and wait for user selection. """
@@ -64,6 +72,14 @@ def run_game():
 
         # Draw maze
         maze.draw_maze(screen, player.collected_keys, player)
+
+        # Move and draw enemies
+        for enemy in enemies:
+            enemy.move_enemy(player, maze.maze)
+            enemy.draw(screen)
+
+            if enemy.detect_player(player):
+                print("Enemy encountered the player!")
 
         # Draw Side Panel
         pygame.draw.rect(screen, (40, 40, 40), (WIDTH, 0, PANEL_WIDTH, HEIGHT))  # Dark gray sidebar
