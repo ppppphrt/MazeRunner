@@ -1,5 +1,6 @@
 class Player:
-    def __init__(self, x=0, y=0):
+    def __init__(self,name, x=0, y=0):
+        self.name = name
         self.x = x
         self.y = y
         self.collected_keys = set()  # Use a set to track which keys have been collected
@@ -26,3 +27,7 @@ class Player:
     def reached_end(self, end_pos):
         """Check if player has reached the end position"""
         return (self.x, self.y) == end_pos
+
+    def respawn(self):
+        """Reset player position to (0,0) without resetting keys."""
+        self.x, self.y = 0, 0

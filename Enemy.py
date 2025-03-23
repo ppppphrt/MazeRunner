@@ -24,10 +24,12 @@ class Enemy:
         if 0 <= new_x < COLS and 0 <= new_y < ROWS and maze[new_y][new_x] == 0:
             self.x, self.y = new_x, new_y
 
+
     def detect_player(self, player):
         """Check if the enemy has encountered the player."""
         if self.x == player.x and self.y == player.y:
-            self.enemy_encounter += 1
+            self.enemy_encounter += 1  # Increase encounter count
+            player.respawn()  # Reset player's position
             return True
         return False
 

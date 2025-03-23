@@ -1,14 +1,15 @@
 import random
-
 import pygame
 import sys
+import time
 
+import constant
 from Enemy import Enemy
 from maze import Maze
 from player import Player
-from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE , YELLOW
+from Leaderboard import Leaderboard
+from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE, YELLOW
 from front_page import Button
-import time
 
 # Initialize Pygame
 pygame.init()
@@ -24,21 +25,36 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Maze Runner")
 
 # Create font
-font = pygame.font.SysFont('PixeloidSans-mLxMm.ttf', 20)
+font = pygame.font.Font("PixeloidSans-mLxMm.ttf", 20)
 
 # Create Buttons for the menu
 start_button = Button("START", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
 rank_button = Button("RANK", SCREEN_WIDTH // 2 - 100, 400, 200, 60, BLUE, DARK_BLUE)
 
-# create enemies
+# Input Box for Player Name
+input_box = pygame.Rect(SCREEN_WIDTH // 2 - 100, 200, 200, 50)
+player_name = ""
+active = False
+
+# Create enemies
 enemies = [Enemy(random.randint(0, COLS - 1), random.randint(0, ROWS - 1)) for _ in range(3)]  # 3 enemies
+
+# Initialize Leaderboard
+leaderboard = Leaderboard()
 
 
 def show_menu():
     """ Display the main menu and wait for user selection. """
+    global player_name, active
+
     running = True
     while running:
         screen.fill(BLACK)
+
+        # Draw input box
+        pygame.draw.rect(screen, (150, 150, 150) if active else (255, 255, 255), input_box, 2)
+        name_surface = font.render(player_name, True, (255, 255, 255))
+        screen.blit(name_surface, (input_box.x + 10, input_box.y + 10))
 
         # Draw buttons
         start_button.draw(screen)
@@ -50,15 +66,32 @@ def show_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif start_button.is_clicked(event):
-                return "start"  # Start game
-            elif rank_button.is_clicked(event):
-                return "rank"  # Show ranking
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if input_box.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+
+                # Check if "Start" is clicked and player entered a name
+                if start_button.is_clicked(event) and player_name.strip():
+                    return "start"
+                elif rank_button.is_clicked(event):
+                    return "rank"
+            elif event.type == pygame.KEYDOWN and active:
+                if event.key == pygame.K_RETURN:
+                    if player_name.strip():
+                        return "start"
+                elif event.key == pygame.K_BACKSPACE:
+                    player_name = player_name[:-1]
+                else:
+                    player_name += event.unicode  # Add typed character
+
 
 def run_game():
     """ Run the maze game. """
+    global player_name  # Ensure we use the name entered
     maze = Maze(ROWS, COLS, num_keys=3)  # Create maze
-    player = Player()  # Create player
+    player = Player(player_name)  # Pass the name to Player class
 
     running = True
     has_won = False
@@ -76,10 +109,8 @@ def run_game():
         # Move and draw enemies
         for enemy in enemies:
             enemy.move_enemy(player, maze.maze)
+            enemy.detect_player(player)
             enemy.draw(screen)
-
-            if enemy.detect_player(player):
-                print("Enemy encountered the player!")
 
         # Draw Side Panel
         pygame.draw.rect(screen, (40, 40, 40), (WIDTH, 0, PANEL_WIDTH, HEIGHT))  # Dark gray sidebar
@@ -133,10 +164,14 @@ def run_game():
                             has_won = True
                             game_message = "You've escaped the maze!"
                             timer_running = False
+
+                            # Save score to leaderboard
+                            leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
                         else:
                             game_message = f"You need all {maze.num_keys} keys to exit!"
 
     pygame.quit()
+
 
 # Main Execution
 while True:
