@@ -167,8 +167,8 @@ def run_game():
 
                             # Save score to leaderboard
                             leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
-                        else:
-                            game_message = f"You need all {maze.num_keys} keys to exit!"
+                        # else:
+                        #     game_message = f"You need all {maze.num_keys} keys to exit!"
 
     pygame.quit()
 
