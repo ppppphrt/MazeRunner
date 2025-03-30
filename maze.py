@@ -4,10 +4,12 @@ from constant import CELL_SIZE, BLACK, WHITE
 
 
 class Maze:
-    def __init__(self, rows, cols, num_keys=3):
+    def __init__(self, rows, cols, num_keys=3, extra_paths=10):
         self.rows = rows
         self.cols = cols
         self.maze = self.generate_maze_backtracking()
+        self.add_extra_paths(extra_paths)
+        self.add_extra_paths(extra_paths // 2)  # Add even more alternative paths
         self.end_pos = self.find_valid_end_position()
         self.num_keys = num_keys
         self.key_positions = self.place_random_keys(num_keys)
@@ -32,6 +34,15 @@ class Maze:
                 stack.pop()
         return maze
 
+    def add_extra_paths(self, count):
+        attempts = 0
+        while count > 0 and attempts < 2000:  # Increase attempts for better distribution
+            x, y = random.randint(1, self.cols - 2), random.randint(1, self.rows - 2)
+            if self.maze[y][x] == 1 and sum(self.maze[ny][nx] == 0 for nx, ny in [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]) >= 1:
+                self.maze[y][x] = 0
+                count -= 1
+            attempts += 1
+
     def find_valid_end_position(self):
         for y in range(self.rows - 1, -1, -1):
             for x in range(self.cols - 1, -1, -1):
@@ -42,42 +53,35 @@ class Maze:
     def place_random_keys(self, count):
         keys = []
         attempts = 0
-        max_attempts = 1000  # Prevent infinite loop
+        max_attempts = 1000
 
         while len(keys) < count and attempts < max_attempts:
             x, y = random.randint(0, self.cols - 1), random.randint(0, self.rows - 1)
-            # Avoid start, end position, other keys, and walls
             if self.maze[y][x] == 0 and (x, y) not in [(0, 0), self.end_pos] and (x, y) not in keys:
                 keys.append((x, y))
             attempts += 1
 
         return keys
 
-    def draw_maze(self, screen, collected_keys, player, y_offset = 0):
-        # Draw maze grid with an offset
+    def draw_maze(self, screen, collected_keys, player, y_offset=0):
         for y in range(self.rows):
             for x in range(self.cols):
                 color = WHITE if self.maze[y][x] == 0 else BLACK
                 pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE + y_offset, CELL_SIZE, CELL_SIZE))
 
-
-        # Draw exit
         exit_image = pygame.image.load("exit.png")
         exit_image = pygame.transform.scale(exit_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE, self.end_pos[1] * CELL_SIZE ))
+        screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE, self.end_pos[1] * CELL_SIZE))
 
-        # Draw keys that haven't been collected yet
         key_image = pygame.image.load("key.png")
         key_image = pygame.transform.scale(key_image, (CELL_SIZE, CELL_SIZE))
-
         for i, key_pos in enumerate(self.key_positions):
-            if i not in collected_keys:  # Only draw keys that haven't been collected
-                screen.blit(key_image, (key_pos[0] * CELL_SIZE, key_pos[1] * CELL_SIZE ))
+            if i not in collected_keys:
+                screen.blit(key_image, (key_pos[0] * CELL_SIZE, key_pos[1] * CELL_SIZE))
 
-        # Draw player
         bot_image = pygame.image.load("robot.png")
         bot_image = pygame.transform.scale(bot_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(bot_image, (player.x * CELL_SIZE, player.y * CELL_SIZE ))
+        screen.blit(bot_image, (player.x * CELL_SIZE, player.y * CELL_SIZE))
 
     def is_valid_move(self, x, y):
         return 0 <= x < self.cols and 0 <= y < self.rows and self.maze[y][x] == 0
