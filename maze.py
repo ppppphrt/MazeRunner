@@ -7,31 +7,63 @@ class Maze:
     def __init__(self, rows, cols, num_keys=3, extra_paths=10):
         self.rows = rows
         self.cols = cols
-        self.maze = self.generate_maze_backtracking()
+        self.maze = self.generate_maze_prims()
         self.add_extra_paths(extra_paths)
         self.add_extra_paths(extra_paths // 2)  # Add even more alternative paths
         self.end_pos = self.find_valid_end_position()
         self.num_keys = num_keys
         self.key_positions = self.place_random_keys(num_keys)
 
-    def generate_maze_backtracking(self):
-        maze = [[1] * self.cols for _ in range(self.rows)]
-        stack = [(0, 0)]
-        visited = set(stack)
+    # def generate_maze_backtracking(self):
+    #     maze = [[1] * self.cols for _ in range(self.rows)]
+    #     stack = [(0, 0)]
+    #     visited = set(stack)
+    #
+    #     while stack:
+    #         x, y = stack[-1]
+    #         maze[y][x] = 0
+    #         neighbors = [(x + dx, y + dy) for dx, dy in [(0, 2), (2, 0), (-2, 0), (0, -2)]]
+    #         random.shuffle(neighbors)
+    #         for nx, ny in neighbors:
+    #             if 0 <= nx < self.cols and 0 <= ny < self.rows and (nx, ny) not in visited:
+    #                 maze[(y + ny) // 2][(x + nx) // 2] = 0
+    #                 stack.append((nx, ny))
+    #                 visited.add((nx, ny))
+    #                 break
+    #         else:
+    #             stack.pop()
+    #     return maze
 
-        while stack:
-            x, y = stack[-1]
-            maze[y][x] = 0
-            neighbors = [(x + dx, y + dy) for dx, dy in [(0, 2), (2, 0), (-2, 0), (0, -2)]]
-            random.shuffle(neighbors)
-            for nx, ny in neighbors:
-                if 0 <= nx < self.cols and 0 <= ny < self.rows and (nx, ny) not in visited:
-                    maze[(y + ny) // 2][(x + nx) // 2] = 0
-                    stack.append((nx, ny))
-                    visited.add((nx, ny))
-                    break
-            else:
-                stack.pop()
+    def generate_maze_prims(self):
+        """Generate a maze using Prim's Algorithm."""
+        maze = [[1] * self.cols for _ in range(self.rows)]  # Start with all walls
+        walls = []
+
+        # Pick a random starting point
+        start_x, start_y = random.randrange(0, self.cols, 2), random.randrange(0, self.rows, 2)
+        maze[start_y][start_x] = 0  # Mark starting cell as a passage
+
+        # Add surrounding walls to the list
+        directions = [(0, 2), (2, 0), (-2, 0), (0, -2)]
+        for dx, dy in directions:
+            nx, ny = start_x + dx, start_y + dy
+            if 0 <= nx < self.cols and 0 <= ny < self.rows:
+                walls.append((nx, ny, start_x, start_y))
+
+        while walls:
+            wx, wy, px, py = random.choice(walls)  # Pick a random wall
+            walls.remove((wx, wy, px, py))
+
+            if maze[wy][wx] == 1:  # If it's still a wall
+                maze[wy][wx] = 0  # Make it a passage
+                maze[(wy + py) // 2][(wx + px) // 2] = 0  # Open path between cells
+
+                # Add neighboring walls to the list
+                for dx, dy in directions:
+                    nx, ny = wx + dx, wy + dy
+                    if 0 <= nx < self.cols and 0 <= ny < self.rows and maze[ny][nx] == 1:
+                        walls.append((nx, ny, wx, wy))
+
         return maze
 
     def add_extra_paths(self, count):
