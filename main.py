@@ -10,6 +10,7 @@ from player import Player
 from Leaderboard import Leaderboard
 from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE, YELLOW
 from front_page import Button
+from GameManager import GameManager
 
 # Initialize Pygame
 pygame.init()
@@ -41,6 +42,7 @@ enemies = [Enemy(random.randint(0, COLS - 1), random.randint(0, ROWS - 1)) for _
 
 # Initialize Leaderboard
 leaderboard = Leaderboard()
+game_manager = GameManager()
 
 
 def show_menu():
@@ -167,6 +169,10 @@ def run_game():
 
                             # Save score to leaderboard
                             leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
+
+                            # Save score to game_results
+                            game_manager.save_time(elapsed_time)
+
                         # else:
                         #     game_message = f"You need all {maze.num_keys} keys to exit!"
 
