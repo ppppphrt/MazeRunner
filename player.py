@@ -21,9 +21,9 @@ class Player:
                 return i  # Return the index of the collected key
         return None
 
-    def has_all_keys(self, maze):
+    def get_key_count(self, maze):
         """Check if player has collected all keys"""
-        return len(self.collected_keys) == maze.num_keys
+        return len(self.collected_keys)
 
     def reached_end(self, end_pos):
         """Check if player has reached the end position"""

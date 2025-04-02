@@ -160,12 +160,17 @@ def run_game():
                     if key_collected is not None:
                         game_message = f"Key {key_collected + 1} collected! {maze.num_keys - len(player.collected_keys)} remaining."
 
-                    # Check if player reaches the end with all keys
                     if player.reached_end(maze.end_pos):
-                        if player.has_all_keys(maze):
-                            has_won = True
-                            game_message = "You've escaped the maze!"
-                            timer_running = False
+                        has_won = True
+                        timer_running = False
+
+                        # Check how many keys the player collected
+                        if player.collected_keys == maze.num_keys:
+                            game_message = f"You've escaped the maze with ALL {player.collected_keys} keys! Bonus awarded!"
+                        # elif player.collected_keys > 0:
+                        #     game_message = f"You've escaped the maze with {player.collected_keys} keys. Good job!"
+                        else:
+                            game_message = "You escaped the maze without collecting any keys. Try again for a better score!"
 
                             # Save score to leaderboard
                             leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
