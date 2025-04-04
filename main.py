@@ -8,7 +8,7 @@ from Enemy import Enemy
 from maze import Maze
 from player import Player
 from Leaderboard import Leaderboard
-from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE, YELLOW
+from constant import CELL_SIZE, ROWS, COLS, WIDTH, HEIGHT, BLACK, BLUE, DARK_BLUE, YELLOW, GRAY, WHITE
 from front_page import Button
 from GameManager import GameManager
 
@@ -31,11 +31,13 @@ font = pygame.font.Font("PixeloidSans-mLxMm.ttf", 20)
 # Create Buttons for the menu
 start_button = Button("START", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
 rank_button = Button("RANK", SCREEN_WIDTH // 2 - 100, 400, 200, 60, BLUE, DARK_BLUE)
+history = Button("History", SCREEN_WIDTH // 2 - 100, 500, 200, 60, BLUE, DARK_BLUE )
 
 # Input Box for Player Name
 input_box = pygame.Rect(SCREEN_WIDTH // 2 - 100, 200, 200, 50)
 player_name = ""
 active = False
+placeholder = "name..."
 
 # Create enemies
 enemies = [Enemy(random.randint(0, COLS - 1), random.randint(0, ROWS - 1)) for _ in range(3)]  # 3 enemies
@@ -53,14 +55,41 @@ def show_menu():
     while running:
         screen.fill(BLACK)
 
+        # Event handling for input box
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Activate input box if clicked
+                if input_box.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+            elif event.type == pygame.KEYDOWN:
+                if active:
+                    if event.key == pygame.K_BACKSPACE:
+                        player_name = player_name[:-1]
+                    else:
+                        player_name += event.unicode
+
+
         # Draw input box
         pygame.draw.rect(screen, (150, 150, 150) if active else (255, 255, 255), input_box, 2)
-        name_surface = font.render(player_name, True, (255, 255, 255))
+        # name_surface = font.render(player_name, True, (255, 255, 255))
+
+        # Display text
+        if player_name:
+            name_surface = font.render(player_name, True, WHITE)
+        else:
+        # Show placeholder when empty and inactive
+            name_surface = font.render(placeholder, True, GRAY)
+
         screen.blit(name_surface, (input_box.x + 10, input_box.y + 10))
 
         # Draw buttons
         start_button.draw(screen)
         rank_button.draw(screen)
+        history.draw(screen)
 
         pygame.display.flip()
 
