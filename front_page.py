@@ -8,7 +8,7 @@ pygame.init()
 # Load Pixeloid Font
 pygame.font.init()
 try:
-    font = pygame.font.Font("PixeloidSans-mLxMm.ttf", 40)  # Load Pixeloid font
+    font = pygame.font.Font("PixeloidSans-mLxMm.ttf", 20)  # Load Pixeloid font
 except:
     print("Font file 'PixeloidSans-mLxMm.ttf' not found!")
     sys.exit()
