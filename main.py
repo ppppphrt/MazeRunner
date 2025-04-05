@@ -1,33 +1,18 @@
-import random
-import pygame
+
 import sys
 import time
 
-import constant
 from Enemy import Enemy
 from end_screen import show_end_page
 from maze import Maze
 from player import Player
 from Leaderboard import Leaderboard
 from constant import *
-from front_page import Button
 from GameManager import GameManager
 
 # Initialize Pygame
 pygame.init()
 pygame.font.init()  # Ensure fonts are initialized
-
-# # Create screen
-# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-# pygame.display.set_caption("Maze Runner")
-#
-# # Create font
-# font = pygame.font.Font("PixeloidSans-mLxMm.ttf", 20)
-#
-# # Create Buttons for the menu
-# start_button = Button("START", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
-# rank_button = Button("RANK", SCREEN_WIDTH // 2 - 100, 400, 200, 60, BLUE, DARK_BLUE)
-# history = Button("History", SCREEN_WIDTH // 2 - 100, 500, 200, 60, BLUE, DARK_BLUE )
 
 # Input Box for Player Name
 input_box = pygame.Rect(SCREEN_WIDTH // 2 - 100, 200, 200, 50)
@@ -36,11 +21,12 @@ active = False
 placeholder = "name..."
 
 # Create enemies
-# enemies = [Enemy(random.randint(0, COLS - 1), random.randint(0, ROWS - 1)) for _ in range(3)]  # 3 enemies
+
 maze = Maze(ROWS, COLS, num_keys=3)  # Create maze
 player = Player(player_name)  # Pass the name to Player class
 exit_pos = (COLS - 1, ROWS - 1)  # Bottom-right as exit
 enemies = [Enemy(maze.maze, player, exit_pos) for _ in range(3)]
+
 # Initialize Leaderboard
 leaderboard = Leaderboard()
 game_manager = GameManager()
@@ -136,11 +122,7 @@ def run_game():
         # Draw maze
         maze.draw_maze(screen, player.collected_keys, player)
 
-        # Move and draw enemies
-        # for enemy in enemies:
-        #     enemy.move_enemy(player, maze.maze)
-        #     enemy.detect_player(player)
-        #     enemy.draw(screen)
+
         for enemy in enemies:
             if enemy.detect_player(player):  # Check if enemy touches player first
                 continue  # Skip movement if it just encountered the player
@@ -149,7 +131,7 @@ def run_game():
             enemy.draw(screen)  # Draw enemy
 
         # Draw Side Panel
-        pygame.draw.rect(screen, (40, 40, 40), (WIDTH, 0, PANEL_WIDTH, HEIGHT))  # Dark gray sidebar
+        pygame.draw.rect(screen, (40, 40, 40), (WIDTH + 300 , 0, 200, HEIGHT))  # Dark gray sidebar
 
         # Display game timer
         if timer_running:
@@ -201,8 +183,7 @@ def run_game():
                         # Check how many keys the player collected
                         if player.collected_keys == maze.num_keys:
                             game_message = f"You've escaped the maze with {player.collected_keys} keys!"
-                        # elif player.collected_keys > 0:
-                        #     game_message = f"You've escaped the maze with {player.collected_keys} keys. Good job!"
+
                         else:
                             game_message = "You escaped the maze without collecting any keys. Try again for a better score!"
 
@@ -212,6 +193,8 @@ def run_game():
                             # Save score to game_results
                             game_manager.save_time(elapsed_time)
 
+                            pygame.time.delay(1500)
+
                             choice = show_end_page()  # Show Restart/Quit screen
 
                             if choice == "restart":
@@ -219,15 +202,6 @@ def run_game():
                             elif choice == "quit":
                                 pygame.quit()
                                 sys.exit()
-
-    # pygame.quit()
-    # choice = show_end_page()  # Show Restart/Quit screen
-    #
-    # if choice == "restart":
-    #     run_game()
-    # elif choice == "quit":
-    #     pygame.quit()
-    #     sys.exit()
 
 
 # Main Execution

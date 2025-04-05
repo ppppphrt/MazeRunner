@@ -10,8 +10,6 @@ def show_end_page():
     restart_button = Button("RESTART", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
     quit_button = Button("QUIT", SCREEN_WIDTH // 2 - 100, 400, 200, 60, BLUE, DARK_BLUE)
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
     running = True
     while running:
         screen.fill(BLACK)

@@ -101,17 +101,17 @@ class Maze:
                 color = WHITE if self.maze[y][x] == 0 else BLACK
                 pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE + y_offset, CELL_SIZE, CELL_SIZE))
 
-        exit_image = pygame.image.load("exit.png")
+        exit_image = pygame.image.load("pic/exit.png")
         exit_image = pygame.transform.scale(exit_image, (CELL_SIZE, CELL_SIZE))
         screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE, self.end_pos[1] * CELL_SIZE))
 
-        key_image = pygame.image.load("key.png")
+        key_image = pygame.image.load("pic/key.png")
         key_image = pygame.transform.scale(key_image, (CELL_SIZE, CELL_SIZE))
         for i, key_pos in enumerate(self.key_positions):
             if i not in collected_keys:
                 screen.blit(key_image, (key_pos[0] * CELL_SIZE, key_pos[1] * CELL_SIZE))
 
-        bot_image = pygame.image.load("robot.png")
+        bot_image = pygame.image.load("pic/robot.png")
         bot_image = pygame.transform.scale(bot_image, (CELL_SIZE, CELL_SIZE))
         screen.blit(bot_image, (player.x * CELL_SIZE, player.y * CELL_SIZE))
 

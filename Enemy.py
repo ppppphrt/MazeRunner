@@ -60,6 +60,6 @@ class Enemy:
 
     def draw(self, screen):
         """Draw the enemy on the screen."""
-        enemy_image = pygame.image.load("enemy.png")
+        enemy_image = pygame.image.load("pic/enemy.png")
         enemy_image = pygame.transform.scale(enemy_image, (CELL_SIZE, CELL_SIZE))
         screen.blit(enemy_image, (self.x * CELL_SIZE, self.y * CELL_SIZE))
