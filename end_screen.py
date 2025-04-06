@@ -15,7 +15,7 @@ def show_end_page():
         screen.fill(BLACK)
 
         # Show Game Over text
-        message_surface = font.render("Game Over!", True, WHITE)
+        message_surface = font.render("You've escaped the maze !", True, WHITE)
         screen.blit(message_surface, (SCREEN_WIDTH // 2 - 60, 200))
 
         restart_button.draw(screen)

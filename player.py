@@ -32,3 +32,6 @@ class Player:
     def respawn(self):
         """Reset player position to (0,0) without resetting keys."""
         self.x, self.y = 0, 0
+
+    def has_all_keys(self, maze):
+        return len(self.collected_keys) == maze.num_keys
