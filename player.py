@@ -1,10 +1,13 @@
 
+from GameManager import GameManager
+
 class Player:
     def __init__(self,name, x=0, y=0):
         self.name = name
         self.x = x
         self.y = y
         self.collected_keys = set()  # Use a set to track which keys have been collected
+        self.game_manager = GameManager()
 
     def move(self, dx, dy, maze):
         new_x, new_y = self.x + dx, self.y + dy

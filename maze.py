@@ -1,7 +1,7 @@
 import random
 import pygame
 from constant import CELL_SIZE, BLACK, WHITE
-
+from GameManager import  GameManager
 
 class Maze:
     def __init__(self, rows, cols, num_keys=3, extra_paths=10):
@@ -13,26 +13,8 @@ class Maze:
         self.end_pos = self.find_valid_end_position()
         self.num_keys = num_keys
         self.key_positions = self.place_random_keys(num_keys)
+        self.game_manager = GameManager()
 
-    # def generate_maze_backtracking(self):
-    #     maze = [[1] * self.cols for _ in range(self.rows)]
-    #     stack = [(0, 0)]
-    #     visited = set(stack)
-    #
-    #     while stack:
-    #         x, y = stack[-1]
-    #         maze[y][x] = 0
-    #         neighbors = [(x + dx, y + dy) for dx, dy in [(0, 2), (2, 0), (-2, 0), (0, -2)]]
-    #         random.shuffle(neighbors)
-    #         for nx, ny in neighbors:
-    #             if 0 <= nx < self.cols and 0 <= ny < self.rows and (nx, ny) not in visited:
-    #                 maze[(y + ny) // 2][(x + nx) // 2] = 0
-    #                 stack.append((nx, ny))
-    #                 visited.add((nx, ny))
-    #                 break
-    #         else:
-    #             stack.pop()
-    #     return maze
 
     def generate_maze_prims(self):
         """Generate a maze using Prim's Algorithm."""
@@ -117,3 +99,7 @@ class Maze:
 
     def is_valid_move(self, x, y):
         return 0 <= x < self.cols and 0 <= y < self.rows and self.maze[y][x] == 0
+
+    def detect_wall_collision(self, direction):
+        # if collision detected:
+        self.game_manager.record_wall_collision()

@@ -30,7 +30,7 @@ enemies = [Enemy(maze.maze, player, exit_pos) for _ in range(3)]
 # Initialize Leaderboard
 leaderboard = Leaderboard()
 show_leaderboard = False
-game_manager = GameManager()
+gm = GameManager()
 game_state = "menu"
 
 def show_menu():
@@ -149,7 +149,7 @@ def run_game():
 
 
         for enemy in enemies:
-            if enemy.detect_player(player):  # Check if enemy touches player first
+            if enemy.detect_player(player, maze, exit_pos):  # Check if enemy touches player first
                 continue  # Skip movement if it just encountered the player
 
             enemy.move_enemy(player, maze.maze)  # Move towards player
@@ -161,14 +161,10 @@ def run_game():
         # Display game timer
         if timer_running:
             elapsed_time = int(time.time() - start_time)  # Convert to integer seconds
+            gm.record_time(elapsed_time)
         time_text = f"Time: {elapsed_time} s"
         time_surface = font.render(time_text, True, YELLOW)
         screen.blit(time_surface, (WIDTH + 20, 20))
-
-        # Display keys collected count
-        # keys_text = f"Keys: {len(player.collected_keys)}/{maze.num_keys}"
-        # keys_surface = font.render(keys_text, True, YELLOW)
-        # screen.blit(keys_surface, (WIDTH + 20, 60))
 
         # Display game message
         if game_message:
@@ -199,7 +195,7 @@ def run_game():
                     # Check if player collects a key
                     key_collected = player.check_key_collection(maze)
                     if key_collected is not None:
-                        game_message = (f"{key_collected + 1} Key collected! \n"
+                        game_message = (f"{len(player.collected_keys)} Key collected! \n"
                                         f"{maze.num_keys - len(player.collected_keys)} \n"
                                         f"remaining to ESCAPE !")
 
@@ -211,13 +207,14 @@ def run_game():
                             timer_running = False
 
                             leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
+                            gm.record_key(len(player.collected_keys))
 
-                            # Save score to game_results
-                            game_manager.save_time(elapsed_time)
-
-                            pygame.time.delay(1500)
+                            # pygame.time.delay(1500)
 
                             choice = show_end_page()  # Show Restart/Quit screen
+
+                            gm.save_stats()
+                            gm.reset_stats()
 
                             if choice == "restart":
                                 run_game()
