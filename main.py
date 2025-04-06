@@ -224,6 +224,8 @@ def run_game():
                             elif choice == "quit":
                                 pygame.quit()
                                 sys.exit()
+                    else:
+                        game_message = "You have to collect ALL KEYS to escape!"
 
 
 # Main Execution
