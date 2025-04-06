@@ -76,7 +76,7 @@ def show_menu():
         # Draw buttons
         start_button.draw(screen)
         rank_button.draw(screen)
-        history.draw(screen)
+        data.draw(screen)
 
         if game_state == "leaderboard":
             screen.fill((0, 0, 0))  # clear screen
