@@ -29,12 +29,13 @@ enemies = [Enemy(maze.maze, player, exit_pos) for _ in range(3)]
 
 # Initialize Leaderboard
 leaderboard = Leaderboard()
+show_leaderboard = False
 game_manager = GameManager()
-
+game_state = "menu"
 
 def show_menu():
     """ Display the main menu and wait for user selection. """
-    global player_name, active
+    global player_name, active, show_leaderboard, game_state
 
     running = True
     while running:
@@ -50,6 +51,7 @@ def show_menu():
                     active = True
                 else:
                     active = False
+
             elif event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_BACKSPACE:
@@ -76,23 +78,46 @@ def show_menu():
         rank_button.draw(screen)
         history.draw(screen)
 
+        if game_state == "leaderboard":
+            screen.fill((0, 0, 0))  # clear screen
+            top_scores = leaderboard.get_top_scores()
+            y_offset = 80
+
+            title_text = font.render(" Top 5 Players ", True, (255, 215, 0))
+            screen.blit(title_text, (screen.get_width() // 2 - title_text.get_width() // 2, y_offset))
+            y_offset += 50
+
+            for i, row in enumerate(top_scores, 1):
+                entry = f"{i}. {row[0]} - Score: {row[1]} - Time: {row[2]}s"
+                entry_text = font.render(entry, True, (255, 255, 255))
+                screen.blit(entry_text, (100, y_offset))
+                y_offset += 40
+
+            # button to return to menu
+            back_button.draw(screen)
+
         pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if input_box.collidepoint(event.pos):
                     active = True
+                elif back_button.rect.collidepoint(event.pos):
+                    game_state = "menu"
+                elif rank_button.rect.collidepoint(event.pos):
+                    game_state = "leaderboard"
+
                 else:
                     active = False
 
                 # Check if "Start" is clicked and player entered a name
                 if start_button.is_clicked(event) and player_name.strip():
                     return "start"
-                elif rank_button.is_clicked(event):
-                    return "rank"
+
             elif event.type == pygame.KEYDOWN and active:
                 if event.key == pygame.K_RETURN:
                     if player_name.strip():
@@ -199,6 +224,9 @@ def run_game():
 
                             if choice == "restart":
                                 run_game()
+                            elif choice == "rank":
+                                leaderboard.get_top_scores()
+
                             elif choice == "quit":
                                 pygame.quit()
                                 sys.exit()
@@ -211,4 +239,4 @@ while True:
     if choice == "start":
         run_game()
     elif choice == "rank":
-        print("Show ranking screen (not implemented yet)")  # Placeholder for ranking screen logic
+        leaderboard.get_top_scores()  # Placeholder for ranking screen logic

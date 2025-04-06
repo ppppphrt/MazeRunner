@@ -30,3 +30,6 @@ font = pygame.font.Font("PixeloidSans-mLxMm.ttf", 20)
 start_button = Button("START", SCREEN_WIDTH // 2 - 100, 300, 200, 60, BLUE, DARK_BLUE)
 rank_button = Button("RANK", SCREEN_WIDTH // 2 - 100, 400, 200, 60, BLUE, DARK_BLUE)
 history = Button("History", SCREEN_WIDTH // 2 - 100, 500, 200, 60, BLUE, DARK_BLUE )
+
+# For LeaderBoard
+back_button = Button("BACK", SCREEN_WIDTH // 2 - 100, 500, 200, 60, BLUE, DARK_BLUE )

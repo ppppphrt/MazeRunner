@@ -28,11 +28,8 @@ class Leaderboard:
 
         return scores
 
-    def display_leaderboard(self):
-        """Print the leaderboard."""
+    def get_top_scores(self, limit=5):
+        """Return the top 'limit' scores from the leaderboard."""
         scores = self.load_scores()
-        print("\n🏆 LEADERBOARD 🏆")
-        print("{:<15} {:<10} {:<10}".format("Player Name", "Score", "Time (s)"))
-        print("-" * 40)
-        for row in scores[:10]:  # Show top 10
-            print("{:<15} {:<10} {:<10}".format(row[0], row[1], row[2]))
+        return scores[:limit]
+
