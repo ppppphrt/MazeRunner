@@ -9,6 +9,7 @@ from player import Player
 from Leaderboard import Leaderboard
 from constant import *
 from GameManager import GameManager
+from visualize_game_data import generate_game_stats
 
 # Initialize Pygame
 pygame.init()
@@ -33,9 +34,20 @@ show_leaderboard = False
 gm = GameManager()
 game_state = "menu"
 
+# Show game stat
+def load_stat_images():
+    time_img = pygame.image.load("time_taken_stat.png")
+    bar_chart = pygame.image.load("bar_chart_avg_keys_collisions.png")
+    line_chart = pygame.image.load("line_chart_steps_enemy.png")
+    return bar_chart, line_chart, time_img
+
+
+show_stats = False
+stat_images = []
+
 def show_menu():
     """ Display the main menu and wait for user selection. """
-    global player_name, active, show_leaderboard, game_state
+    global player_name, active, show_leaderboard, game_state, show_stats, stat_images
 
     running = True
     while running:
@@ -76,7 +88,13 @@ def show_menu():
         # Draw buttons
         start_button.draw(screen)
         rank_button.draw(screen)
-        data.draw(screen)
+        data_button.draw(screen)
+
+        # display game stats if triggered
+        if show_stats:
+            screen.blit(stat_images[0], (50, 100))  # time taken image
+            screen.blit(stat_images[1], (50, 220))  # bar chart
+            screen.blit(stat_images[2], (50, 480))  # line chart
 
         if game_state == "leaderboard":
             screen.fill((0, 0, 0))  # clear screen
@@ -110,6 +128,11 @@ def show_menu():
                     game_state = "menu"
                 elif rank_button.rect.collidepoint(event.pos):
                     game_state = "leaderboard"
+                elif data_button.rect.collidepoint(event.pos):
+                    game_state = "Game Stat"
+                    generate_game_stats()
+                    stat_images = load_stat_images()
+                    show_stats = True
 
                 else:
                     active = False
@@ -224,6 +247,9 @@ def run_game():
                             elif choice == "quit":
                                 pygame.quit()
                                 sys.exit()
+
+                            elif choice == "Game Stat":
+                                generate_game_stats()
                     else:
                         game_message = "You have to collect ALL KEYS to escape!"
 
@@ -236,3 +262,6 @@ while True:
         run_game()
     elif choice == "rank":
         leaderboard.get_top_scores()  # Placeholder for ranking screen logic
+    elif choice == "Game Stat":
+        generate_game_stats()
+
