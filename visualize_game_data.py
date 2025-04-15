@@ -16,7 +16,7 @@ def generate_game_stats():
     img = Image.new("RGB", (500, 100), color="white")
     draw = ImageDraw.Draw(img)
 
-    # Optional: Load a font
+    # Load a font
     try:
         font = ImageFont.truetype("arial.ttf", 20)
     except:
@@ -26,7 +26,7 @@ def generate_game_stats():
     draw.text((10, 40), f"Minimum Time Taken: {min_time} seconds", fill="black", font=font)
     draw.text((10, 65), f"Maximum Time Taken: {max_time} seconds", fill="black", font=font)
 
-    img.save("time_taken_stat.png")
+    img.save("/Users/ppppphrt/MazeRunner/stat_pic/time_taken_stat.png")
 
     # Bar chart
     avg_keys = df["keys_collected"].mean()
@@ -36,11 +36,11 @@ def generate_game_stats():
     plt.title("Average Keys Collected & Wall Collisions")
     plt.ylabel("Average Count")
     plt.tight_layout()
-    plt.savefig("bar_chart_avg_keys_collisions.png")
+    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/bar_chart_avg_keys_collisions.png")
     plt.close()
 
     # Line chart
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(6, 4))
     plt.plot(df["steps_taken"], label="Steps Taken", marker="o", color="green")
     plt.plot(df["enemy_encounters"], label="Enemy Encounters", marker="x", color="red")
     plt.title("Steps and Enemy Encounters Over Sessions")
@@ -49,6 +49,6 @@ def generate_game_stats():
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig("line_chart_steps_enemy.png")
+    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/line_chart_steps_enemy.png")
     plt.close()
 

@@ -36,11 +36,10 @@ game_state = "menu"
 
 # Show game stat
 def load_stat_images():
-    time_img = pygame.image.load("time_taken_stat.png")
-    bar_chart = pygame.image.load("bar_chart_avg_keys_collisions.png")
-    line_chart = pygame.image.load("line_chart_steps_enemy.png")
+    time_img = pygame.image.load("stat_pic/time_taken_stat.png")
+    bar_chart = pygame.image.load("stat_pic/bar_chart_avg_keys_collisions.png")
+    line_chart = pygame.image.load("stat_pic/line_chart_steps_enemy.png")
     return bar_chart, line_chart, time_img
-
 
 show_stats = False
 stat_images = []
@@ -53,10 +52,11 @@ def show_menu():
     while running:
         screen.fill(BLACK)
 
-        # Event handling for input box
+        # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Activate input box if clicked
                 if input_box.collidepoint(event.pos):
@@ -64,39 +64,51 @@ def show_menu():
                 else:
                     active = False
 
+                # Check button clicks
+                if game_state == "menu":
+                    if start_button.is_clicked(event) and player_name.strip():
+                        return "start"
+                    elif rank_button.rect.collidepoint(event.pos):
+                        game_state = "leaderboard"
+                    elif data_button.rect.collidepoint(event.pos):
+                        game_state = "Game Stat"
+                        generate_game_stats()
+                        stat_images = load_stat_images()
+                        show_stats = True
+                elif game_state == "leaderboard" or game_state == "Game Stat":
+                    if back_button.rect.collidepoint(event.pos):
+                        game_state = "menu"
+                        show_stats = False
+
             elif event.type == pygame.KEYDOWN:
                 if active:
-                    if event.key == pygame.K_BACKSPACE:
+                    if event.key == pygame.K_RETURN and player_name.strip():
+                        return "start"
+                    elif event.key == pygame.K_BACKSPACE:
                         player_name = player_name[:-1]
                     else:
                         player_name += event.unicode
 
+        # Render the appropriate screen based on game_state
+        if game_state == "menu":
+            # Draw input box
+            pygame.draw.rect(screen, (150, 150, 150) if active else (255, 255, 255), input_box, 2)
 
-        # Draw input box
-        pygame.draw.rect(screen, (150, 150, 150) if active else (255, 255, 255), input_box, 2)
-        # name_surface = font.render(player_name, True, (255, 255, 255))
+            # Display text
+            if player_name:
+                name_surface = font.render(player_name, True, WHITE)
+            else:
+                # Show placeholder when empty and inactive
+                name_surface = font.render(placeholder, True, GRAY)
 
-        # Display text
-        if player_name:
-            name_surface = font.render(player_name, True, WHITE)
-        else:
-        # Show placeholder when empty and inactive
-            name_surface = font.render(placeholder, True, GRAY)
+            screen.blit(name_surface, (input_box.x + 10, input_box.y + 10))
 
-        screen.blit(name_surface, (input_box.x + 10, input_box.y + 10))
+            # Draw buttons
+            start_button.draw(screen)
+            rank_button.draw(screen)
+            data_button.draw(screen)
 
-        # Draw buttons
-        start_button.draw(screen)
-        rank_button.draw(screen)
-        data_button.draw(screen)
-
-        # display game stats if triggered
-        if show_stats:
-            screen.blit(stat_images[0], (50, 100))  # time taken image
-            screen.blit(stat_images[1], (50, 220))  # bar chart
-            screen.blit(stat_images[2], (50, 480))  # line chart
-
-        if game_state == "leaderboard":
+        elif game_state == "leaderboard":
             screen.fill((0, 0, 0))  # clear screen
             top_scores = leaderboard.get_top_scores()
             y_offset = 80
@@ -114,43 +126,16 @@ def show_menu():
             # button to return to menu
             back_button.draw(screen)
 
+        elif game_state == "Game Stat" and show_stats:
+            screen.fill((0, 0, 0))  # clear screen
+            screen.blit(stat_images[0], (10, 100))  # time taken image
+            screen.blit(stat_images[1], (40, 220))  # bar chart
+            screen.blit(stat_images[2], (60, 480))  # line chart
+
+            # button to return to menu
+            back_button.draw(screen)
+
         pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if input_box.collidepoint(event.pos):
-                    active = True
-                elif back_button.rect.collidepoint(event.pos):
-                    game_state = "menu"
-                elif rank_button.rect.collidepoint(event.pos):
-                    game_state = "leaderboard"
-                elif data_button.rect.collidepoint(event.pos):
-                    game_state = "Game Stat"
-                    generate_game_stats()
-                    stat_images = load_stat_images()
-                    show_stats = True
-                    print("Game Stat button clicked")
-
-                else:
-                    active = False
-
-                # Check if "Start" is clicked and player entered a name
-                if start_button.is_clicked(event) and player_name.strip():
-                    return "start"
-
-            elif event.type == pygame.KEYDOWN and active:
-                if event.key == pygame.K_RETURN:
-                    if player_name.strip():
-                        return "start"
-                elif event.key == pygame.K_BACKSPACE:
-                    player_name = player_name[:-1]
-                else:
-                    player_name += event.unicode  # Add typed character
-
 
 def run_game():
     """ Run the maze game. """
