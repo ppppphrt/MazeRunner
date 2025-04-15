@@ -133,6 +133,7 @@ def show_menu():
                     generate_game_stats()
                     stat_images = load_stat_images()
                     show_stats = True
+                    print("Game Stat button clicked")
 
                 else:
                     active = False

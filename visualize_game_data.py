@@ -51,3 +51,4 @@ def generate_game_stats():
     plt.tight_layout()
     plt.savefig("line_chart_steps_enemy.png")
     plt.close()
+
