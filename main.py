@@ -22,7 +22,6 @@ active = False
 placeholder = "name..."
 
 # Create enemies
-
 maze = Maze(ROWS, COLS, num_keys=3)  # Create maze
 player = Player(player_name)  # Pass the name to Player class
 exit_pos = (COLS - 1, ROWS - 1)  # Bottom-right as exit
@@ -48,23 +47,25 @@ def show_menu():
     """ Display the main menu and wait for user selection. """
     global player_name, active, show_leaderboard, game_state, show_stats, stat_images
 
+    scroll_offset = 0
+    scroll_speed = 30
+    max_scroll = 0
+
     running = True
     while running:
         screen.fill(BLACK)
 
-        # Handle events
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Activate input box if clicked
                 if input_box.collidepoint(event.pos):
                     active = True
                 else:
                     active = False
 
-                # Check button clicks
                 if game_state == "menu":
                     if start_button.is_clicked(event) and player_name.strip():
                         return "start"
@@ -75,10 +76,23 @@ def show_menu():
                         generate_game_stats()
                         stat_images = load_stat_images()
                         show_stats = True
-                elif game_state == "leaderboard" or game_state == "Game Stat":
+                        scroll_offset = 0
+
+                        # Calculate max scroll based on images
+                        total_height = 100 + sum(img.get_height() + 40 for img in stat_images)
+                        visible_height = screen.get_height()
+                        max_scroll = max(0, total_height - visible_height)
+
+                elif game_state in ("leaderboard", "Game Stat"):
                     if back_button.rect.collidepoint(event.pos):
                         game_state = "menu"
                         show_stats = False
+
+                if game_state == "Game Stat" and show_stats:
+                    if event.button == 4:  # Scroll up
+                        scroll_offset = min(scroll_offset + scroll_speed, 0)
+                    elif event.button == 5:  # Scroll down
+                        scroll_offset = max(scroll_offset - scroll_speed, -max_scroll)
 
             elif event.type == pygame.KEYDOWN:
                 if active:
@@ -88,54 +102,48 @@ def show_menu():
                         player_name = player_name[:-1]
                     else:
                         player_name += event.unicode
+                elif game_state == "Game Stat" and show_stats:
+                    if event.key == pygame.K_UP:
+                        scroll_offset = min(scroll_offset + scroll_speed, 0)
+                    elif event.key == pygame.K_DOWN:
+                        scroll_offset = max(scroll_offset - scroll_speed, -max_scroll)
 
-        # Render the appropriate screen based on game_state
+        # --- Render UI ---
         if game_state == "menu":
-            # Draw input box
             pygame.draw.rect(screen, (150, 150, 150) if active else (255, 255, 255), input_box, 2)
-
-            # Display text
-            if player_name:
-                name_surface = font.render(player_name, True, WHITE)
-            else:
-                # Show placeholder when empty and inactive
-                name_surface = font.render(placeholder, True, GRAY)
-
+            name_surface = font.render(player_name if player_name else placeholder, True, WHITE if player_name else GRAY)
             screen.blit(name_surface, (input_box.x + 10, input_box.y + 10))
-
-            # Draw buttons
             start_button.draw(screen)
             rank_button.draw(screen)
             data_button.draw(screen)
 
         elif game_state == "leaderboard":
-            screen.fill((0, 0, 0))  # clear screen
+            screen.fill((0, 0, 0))
             top_scores = leaderboard.get_top_scores()
             y_offset = 80
-
             title_text = font.render(" Top 5 Players ", True, (255, 215, 0))
             screen.blit(title_text, (screen.get_width() // 2 - title_text.get_width() // 2, y_offset))
             y_offset += 50
-
             for i, row in enumerate(top_scores, 1):
                 entry = f"{i}. {row[0]} - Time: {row[2]}s"
                 entry_text = font.render(entry, True, (255, 255, 255))
                 screen.blit(entry_text, (100, y_offset))
                 y_offset += 40
-
-            # button to return to menu
             back_button.draw(screen)
 
         elif game_state == "Game Stat" and show_stats:
-            screen.fill((0, 0, 0))  # clear screen
-            screen.blit(stat_images[0], (10, 100))  # time taken image
-            screen.blit(stat_images[1], (40, 220))  # bar chart
-            screen.blit(stat_images[2], (60, 480))  # line chart
+            screen.fill((0, 0, 0))
 
-            # button to return to menu
+            # Display each stat image with vertical spacing and scroll offset
+            y = 100 + scroll_offset
+            for i, img in enumerate(stat_images):
+                screen.blit(img, (60, y))
+                y += img.get_height() + 40  # 40px spacing
+
             back_button.draw(screen)
 
         pygame.display.flip()
+
 
 def run_game():
     """ Run the maze game. """
