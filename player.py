@@ -13,6 +13,7 @@ class Player:
         new_x, new_y = self.x + dx, self.y + dy
         if maze.is_valid_move(new_x, new_y):
             self.x, self.y = new_x, new_y
+            GameManager.record_step()
             return True
         return False
 

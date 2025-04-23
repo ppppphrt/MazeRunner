@@ -12,3 +12,8 @@ time_taken,keys_collected,steps_taken,wall_collisions,enemy_encounters
 53,3,0,0,0
 48,3,0,0,0
 108,3,0,0,0
+24,3,0,0,0
+32,3,0,0,0
+68,3,0,0,4
+72,3,248,0,2
+55,3,206,26,3

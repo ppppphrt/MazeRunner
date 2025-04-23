@@ -67,7 +67,7 @@ class Enemy:
             player.respawn()
             self.delay_counter = self.delay_frames  # Pause after encounter
             self.x, self.y = self._get_valid_spawn(maze, player, exit_pos)  # Move enemy
-            self.on_player_caught()  # Record in GameManager
+            self.game_manager.record_enemy_encounter()  # Record in GameManager
             return True
         return False
 

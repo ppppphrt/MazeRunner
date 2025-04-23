@@ -167,7 +167,9 @@ def run_game():
 
         for enemy in enemies:
             if enemy.detect_player(player, maze, exit_pos):  # Check if enemy touches player first
-                continue  # Skip movement if it just encountered the player
+                gm.record_enemy_encounter()
+                continue # Skip movement if it just encountered the player
+
 
             enemy.move_enemy(player, maze.maze)  # Move towards player
             enemy.draw(screen)  # Draw enemy
@@ -208,6 +210,9 @@ def run_game():
                 # Check if move is valid
                 if maze.is_valid_move(new_x, new_y):
                     player.x, player.y = new_x, new_y
+                    gm.record_step()
+                # else:
+                #     gm.record_wall_collision()
 
                     # Check if player collects a key
                     key_collected = player.check_key_collection(maze)
@@ -246,6 +251,10 @@ def run_game():
                                 generate_game_stats()
                     else:
                         game_message = "You have to collect ALL KEYS to escape!"
+                else:
+                    # Handle wall collision
+                    gm.record_wall_collision()
+
 
 
 # Main Execution
