@@ -7,6 +7,65 @@ def generate_game_stats():
 
     df = pd.read_csv("game_results_stat.csv")
 
+    # Create statistical summary table
+    plt.figure(figsize=(8, 5))
+    plt.axis('off')
+
+    # Calculate key statistics
+    stats_data = {
+        'Metric': ['Steps Taken', 'Keys Collected', 'Wall Collisions', 'Enemy Encounters', 'Time Taken (s)'],
+        'Min': [df['steps_taken'].min(), df['keys_collected'].min(),
+                df['wall_collisions'].min(), df['enemy_encounters'].min(), df['time_taken'].min()],
+        'Max': [df['steps_taken'].max(), df['keys_collected'].max(),
+                df['wall_collisions'].max(), df['enemy_encounters'].max(), df['time_taken'].max()],
+        'Average': [df['steps_taken'].mean(), df['keys_collected'].mean(),
+                    df['wall_collisions'].mean(), df['enemy_encounters'].mean(), df['time_taken'].mean()],
+        'Median': [df['steps_taken'].median(), df['keys_collected'].median(),
+                   df['wall_collisions'].median(), df['enemy_encounters'].median(), df['time_taken'].median()],
+        'Std Dev': [df['steps_taken'].std(), df['keys_collected'].std(),
+                    df['wall_collisions'].std(), df['enemy_encounters'].std(), df['time_taken'].std()]
+    }
+
+    # Round numeric values for better display
+    for key in stats_data:
+        if key != 'Metric':
+            stats_data[key] = [round(x, 2) for x in stats_data[key]]
+
+    # Calculate derived metrics
+    movement_efficiency = round(df['steps_taken'].sum() / max(df['wall_collisions'].sum(), 1), 2)
+    enemy_challenge_ratio = round(df['steps_taken'].sum() / max(df['enemy_encounters'].sum(), 1), 2)
+    completion_time_per_key = round(df['time_taken'].mean() / max(df['keys_collected'].mean(), 1), 2)
+
+    # Create the table
+    col_labels = list(stats_data.keys())
+    cell_text = []
+    for i in range(len(stats_data['Metric'])):
+        cell_text.append([stats_data[key][i] for key in stats_data.keys()])
+
+    table = plt.table(cellText=cell_text, colLabels=col_labels,
+                      loc='center', cellLoc='center',
+                      colColours=['#f2f2f2'] * len(col_labels))
+
+    # Style the table
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.2, 1.5)
+
+    # Add title
+    plt.title('Maze Runner Game Statistics Summary', fontsize=16, pad=20)
+
+    # Add interpretation text below the table
+    plt.figtext(0.5, 0.05,
+                f"Performance Insights:\n"
+                f"• Movement Efficiency: {movement_efficiency} steps per wall collision\n"
+                f"• Enemy Challenge Balance: {enemy_challenge_ratio} steps per enemy encounter\n"
+                f"• Time Efficiency: {completion_time_per_key} seconds per key collected",
+                ha='center', fontsize=10, bbox=dict(facecolor='#f9f9f9', alpha=0.5))
+
+    plt.tight_layout()
+    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/stats_summary_table.png",
+                bbox_inches='tight', dpi=120)
+    plt.close()
 
     # --- Time Taken (min/max) ---
     min_time = df["time_taken"].min()

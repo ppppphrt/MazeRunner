@@ -38,7 +38,8 @@ def load_stat_images():
     time_img = pygame.image.load("stat_pic/time_taken_stat.png")
     bar_chart = pygame.image.load("stat_pic/bar_chart_avg_keys_collisions.png")
     line_chart = pygame.image.load("stat_pic/line_chart_steps_enemy.png")
-    return bar_chart, line_chart, time_img
+    stat_summary = pygame.image.load("stat_pic/stats_summary_table.png")
+    return bar_chart, line_chart, time_img , stat_summary
 
 show_stats = False
 stat_images = []
