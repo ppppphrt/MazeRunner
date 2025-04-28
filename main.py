@@ -163,7 +163,7 @@ def run_game():
         screen.fill(BLACK)
 
         # Draw maze
-        maze.draw_maze(screen, player.collected_keys, player)
+        maze.draw_maze(screen, player.collected_keys, player, OFF_X, OFF_Y)
 
 
         for enemy in enemies:
@@ -173,10 +173,10 @@ def run_game():
 
 
             enemy.move_enemy(player, maze.maze)  # Move towards player
-            enemy.draw(screen)  # Draw enemy
+            enemy.draw(screen, OFF_X,OFF_Y)  # Draw enemy
 
         # Draw Side Panel
-        pygame.draw.rect(screen, (40, 40, 40), (WIDTH + 300 , 0, 200, HEIGHT))  # Dark gray sidebar
+        pygame.draw.rect(screen, (40, 40, 40), (PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT))  # Dark gray sidebar
 
         # Display game timer
         if timer_running:
@@ -184,12 +184,12 @@ def run_game():
             gm.record_time(elapsed_time)
         time_text = f"Time: {elapsed_time} s"
         time_surface = font.render(time_text, True, YELLOW)
-        screen.blit(time_surface, (WIDTH + 20, 20))
+        screen.blit(time_surface, (PANEL_X + 20, 20))
 
         # Display game message
         if game_message:
             message_surface = font.render(game_message, True, (255, 255, 0))
-            screen.blit(message_surface, (WIDTH + 20, 100))
+            screen.blit(message_surface, (PANEL_X + 20, 100))
 
         pygame.display.flip()
 

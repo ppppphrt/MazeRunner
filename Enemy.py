@@ -71,11 +71,11 @@ class Enemy:
             return True
         return False
 
-    def draw(self, screen):
+    def draw(self, screen, x_off, y_off):
         """Draw the enemy on the screen."""
         enemy_image = pygame.image.load("pic/enemy.png")
         enemy_image = pygame.transform.scale(enemy_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(enemy_image, (self.x * CELL_SIZE, self.y * CELL_SIZE))
+        screen.blit(enemy_image, (self.x * CELL_SIZE + x_off, self.y * CELL_SIZE + y_off))
 
     def on_player_caught(self):
         self.game_manager.record_enemy_encounter()

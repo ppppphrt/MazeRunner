@@ -1,6 +1,7 @@
 import random
 import pygame
-from constant import CELL_SIZE, BLACK, WHITE
+
+from constant import CELL_SIZE, BLACK, WHITE, BLUE
 from GameManager import  GameManager
 
 class Maze:
@@ -77,25 +78,27 @@ class Maze:
 
         return keys
 
-    def draw_maze(self, screen, collected_keys, player, y_offset=0):
+    def draw_maze(self, screen, collected_keys, player,x_off,y_off):
         for y in range(self.rows):
             for x in range(self.cols):
-                color = WHITE if self.maze[y][x] == 0 else BLACK
-                pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE + y_offset, CELL_SIZE, CELL_SIZE))
+                color = WHITE
+                if self.maze[y][x] != 0:
+                    color = BLUE
+                pygame.draw.rect(screen, color, (x * CELL_SIZE + x_off, y * CELL_SIZE + y_off, CELL_SIZE, CELL_SIZE))
 
         exit_image = pygame.image.load("pic/exit.png")
         exit_image = pygame.transform.scale(exit_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE, self.end_pos[1] * CELL_SIZE))
+        screen.blit(exit_image, (self.end_pos[0] * CELL_SIZE + x_off, self.end_pos[1] * CELL_SIZE + y_off))
 
         key_image = pygame.image.load("pic/key.png")
         key_image = pygame.transform.scale(key_image, (CELL_SIZE, CELL_SIZE))
         for i, key_pos in enumerate(self.key_positions):
             if i not in collected_keys:
-                screen.blit(key_image, (key_pos[0] * CELL_SIZE, key_pos[1] * CELL_SIZE))
+                screen.blit(key_image, (key_pos[0] * CELL_SIZE + x_off, key_pos[1] * CELL_SIZE + y_off))
 
         bot_image = pygame.image.load("pic/robot.png")
         bot_image = pygame.transform.scale(bot_image, (CELL_SIZE, CELL_SIZE))
-        screen.blit(bot_image, (player.x * CELL_SIZE, player.y * CELL_SIZE))
+        screen.blit(bot_image, (player.x * CELL_SIZE + x_off, player.y * CELL_SIZE + y_off))
 
     def is_valid_move(self, x, y):
         return 0 <= x < self.cols and 0 <= y < self.rows and self.maze[y][x] == 0
