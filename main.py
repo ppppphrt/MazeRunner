@@ -186,6 +186,11 @@ def run_game():
         time_surface = font.render(time_text, True, YELLOW)
         screen.blit(time_surface, (PANEL_X + 20, 20))
 
+        # Display keys collected count
+        keys_text = f"Keys: {len(player.collected_keys)}/{maze.num_keys}"
+        keys_surface = font.render(keys_text, True, YELLOW)
+        screen.blit(keys_surface, (PANEL_X + 20, 60))
+
         # Display game message
         if game_message:
             message_surface = font.render(game_message, True, (255, 255, 0))
@@ -215,46 +220,46 @@ def run_game():
                 # else:
                 #     gm.record_wall_collision()
 
-                    # Check if player collects a key
-                    key_collected = player.check_key_collection(maze)
-                    if key_collected is not None:
-                        game_message = (f"{len(player.collected_keys)} Key collected! \n"
-                                        f"{maze.num_keys - len(player.collected_keys)} \n"
-                                        f"remaining to ESCAPE !")
+                # Check if player collects a key
+                key_collected = player.check_key_collection(maze)
+                if key_collected is not None:
+                    game_message = (f"{len(player.collected_keys)} Key collected! \n"
+                                    f"{maze.num_keys - len(player.collected_keys)} \n"
+                                    f"remaining to ESCAPE !")
 
-                    # Check if player reaches the end with all keys
-                    if player.reached_end(maze.end_pos):
-                        if player.has_all_keys(maze):
-                            has_won = True
-                            game_message = "You've escaped the maze!"
-                            timer_running = False
+                # Check if player reaches the end with all keys
+                if player.reached_end(maze.end_pos):
+                    if player.has_all_keys(maze):
+                        has_won = True
+                        game_message = "You've escaped the maze!"
+                        timer_running = False
 
-                            leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
-                            gm.record_key(len(player.collected_keys))
+                        leaderboard.save_score(player.name, len(player.collected_keys), elapsed_time)
+                        gm.record_key(len(player.collected_keys))
 
-                            # pygame.time.delay(1500)
+                        # pygame.time.delay(1500)
 
-                            choice = show_end_page()  # Show Restart/Quit screen
+                        choice = show_end_page()  # Show Restart/Quit screen
 
-                            gm.save_stats()
-                            gm.reset_stats()
+                        gm.save_stats()
+                        gm.reset_stats()
 
-                            if choice == "restart":
-                                run_game()
-                            elif choice == "rank":
-                                leaderboard.get_top_scores()
+                        if choice == "restart":
+                            run_game()
+                        elif choice == "rank":
+                            leaderboard.get_top_scores()
 
-                            elif choice == "quit":
-                                pygame.quit()
-                                sys.exit()
+                        elif choice == "quit":
+                            pygame.quit()
+                            sys.exit()
 
-                            elif choice == "Game Stat":
-                                generate_game_stats()
-                    else:
-                        game_message = "You have to collect ALL KEYS to escape!"
+                        elif choice == "Game Stat":
+                            generate_game_stats()
                 else:
-                    # Handle wall collision
-                    gm.record_wall_collision()
+                    game_message = "You have to collect ALL KEYS to escape!"
+            else:
+                # Handle wall collision
+                gm.record_wall_collision()
 
 
 
