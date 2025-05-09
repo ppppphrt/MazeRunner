@@ -159,8 +159,19 @@ def run_game():
     elapsed_time = 0
     timer_running = True
 
+    grass_image = pygame.image.load("pic/grass.png").convert()
+    grass_image = pygame.transform.scale(grass_image, (CELL_SIZE, CELL_SIZE))
+
     while running:
         screen.fill(BLACK)
+
+        # Draw grass border
+        for row in range(-1, ROWS + 1):
+            for col in range(-1, COLS + 1):
+                if row == -1 or row == ROWS or col == -1 or col == COLS:
+                    x = OFF_X + col * CELL_SIZE
+                    y = OFF_Y + row * CELL_SIZE
+                    screen.blit(grass_image, (x, y))
 
         # Draw maze
         maze.draw_maze(screen, player.collected_keys, player, OFF_X, OFF_Y)

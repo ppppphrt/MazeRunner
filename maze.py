@@ -1,7 +1,7 @@
 import random
 import pygame
 
-from constant import CELL_SIZE, BLACK, WHITE, BLUE
+from constant import CELL_SIZE, BLACK, WHITE, BLUE, ROWS, COLS, OFF_X, OFF_Y
 from GameManager import  GameManager
 
 class Maze:
@@ -99,6 +99,11 @@ class Maze:
         bot_image = pygame.image.load("pic/robot.png")
         bot_image = pygame.transform.scale(bot_image, (CELL_SIZE, CELL_SIZE))
         screen.blit(bot_image, (player.x * CELL_SIZE + x_off, player.y * CELL_SIZE + y_off))
+
+        # # Draw grass
+        # grass_image = pygame.image.load("pic/grass.png").convert()
+        # grass_image = pygame.transform.scale(grass_image, (CELL_SIZE, CELL_SIZE))
+
 
     def is_valid_move(self, x, y):
         return 0 <= x < self.cols and 0 <= y < self.rows and self.maze[y][x] == 0
