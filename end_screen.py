@@ -16,7 +16,8 @@ def show_end_page():
 
         # Show Game Over text
         message_surface = font.render("You've escaped the maze !", True, WHITE)
-        screen.blit(message_surface, (SCREEN_WIDTH // 2 - 60, 200))
+        message_rect = message_surface.get_rect(center=(SCREEN_WIDTH // 2, 200))
+        screen.blit(message_surface, message_rect)
 
         restart_button.draw(screen)
         quit_button.draw(screen)
