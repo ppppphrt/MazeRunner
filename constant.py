@@ -1,6 +1,6 @@
 import pygame
 
-from front_page import Button
+from Button import Button
 
 CELL_SIZE = 30
 ROWS, COLS = 19, 29

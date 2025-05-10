@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from constant import *
-from front_page import Button, font
+from Button import Button, font
 
 
 def show_end_page():
