@@ -1,8 +1,5 @@
 # Maze Escape - Pygame 
 
-### Objective
-Navigate through the randomly generated maze and reach the exit before time runs out. Avoid obstacles and use strategic movement to escape efficiently.
-
 
 ### Controls
 - **Arrow Keys (← ↑ → ↓)** : Move the player in the respective direction.
