@@ -10,6 +10,8 @@ from Leaderboard import Leaderboard
 from constant import *
 from GameManager import GameManager
 from visualize_game_data import generate_game_stats
+from instruction_page import show_instruction_page
+
 
 # Initialize Pygame
 pygame.init()
@@ -273,6 +275,10 @@ def run_game():
                 gm.record_wall_collision()
 
 
+# Show How To Win page first
+result = show_instruction_page()
+if result == "go":
+    pass
 
 # Main Execution
 while True:
