@@ -1,0 +1,9 @@
+# .gitignore
+
+# Ignore cache folders
+.cache/
+node_modules/
+dist/
+build/
+__pycache__/
+*.log
