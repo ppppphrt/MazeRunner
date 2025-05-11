@@ -6,3 +6,4 @@ pillow>=8.2.0
 pytest>=6.2.5
 colorama>=0.4.4
 tqdm>=4.61.0
+pandas>=1.2.0
