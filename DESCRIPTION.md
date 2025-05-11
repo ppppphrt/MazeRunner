@@ -21,3 +21,5 @@ The core gameplay revolves around guiding a player through a maze while evading 
 
 ## UML Class Diagram
 ![updated_diagram](https://github.com/user-attachments/assets/93833de7-b028-46e9-8f05-1a470151fa2b)
+
+[Youtube Link](https://youtu.be/dtZ33MDoJm0)
