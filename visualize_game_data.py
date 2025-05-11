@@ -63,7 +63,7 @@ def generate_game_stats():
                 ha='center', fontsize=10, bbox=dict(facecolor='#f9f9f9', alpha=0.5))
 
     plt.tight_layout()
-    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/stats_summary_table.png",
+    plt.savefig("./stat_pic/stats_summary_table.png",
                 bbox_inches='tight', dpi=120)
     plt.close()
 
@@ -85,7 +85,7 @@ def generate_game_stats():
     draw.text((10, 40), f"Minimum Time Taken: {min_time} seconds", fill="black", font=font)
     draw.text((10, 65), f"Maximum Time Taken: {max_time} seconds", fill="black", font=font)
 
-    img.save("/Users/ppppphrt/MazeRunner/stat_pic/time_taken_stat.png")
+    img.save("./stat_pic/time_taken_stat.png")
 
     # Bar chart
     avg_keys = df["keys_collected"].mean()
@@ -95,7 +95,7 @@ def generate_game_stats():
     plt.title("Average Keys Collected & Wall Collisions")
     plt.ylabel("Average Count")
     plt.tight_layout()
-    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/bar_chart_avg_keys_collisions.png")
+    plt.savefig("./stat_pic/bar_chart_avg_keys_collisions.png")
     plt.close()
 
     # Line chart for navigation efficiency analysis
@@ -121,7 +121,7 @@ def generate_game_stats():
                 ha="center", fontsize=10, style="italic")
 
     plt.tight_layout()
-    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/navigation_efficiency_analysis.png")
+    plt.savefig("./stat_pic/navigation_efficiency_analysis.png")
     plt.close()
 
     # Bar chart
@@ -132,7 +132,7 @@ def generate_game_stats():
     plt.title("Wall Collisions & Step Taken")
     plt.ylabel("Average Count")
     plt.tight_layout()
-    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/bar_chart_avg_keys_collisions.png")
+    plt.savefig("./stat_pic/bar_chart_avg_keys_collisions.png")
     plt.close()
 
     # Line chart
@@ -156,6 +156,6 @@ def generate_game_stats():
                 ha="center", fontsize=10, style="italic")
 
     plt.tight_layout()
-    plt.savefig("/Users/ppppphrt/MazeRunner/stat_pic/line_chart_steps_enemy.png")
+    plt.savefig("./stat_pic/line_chart_steps_enemy.png")
     plt.close()
 
