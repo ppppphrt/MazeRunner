@@ -60,7 +60,6 @@ Enjoy the challenge and escape the maze as quickly as possible!
    ```
 
 
-### Proposal
-[click here](https://drive.google.com/file/d/14OAPQl_q3lcREFTnXoft4Jx_M2Vypjmg/view?usp=sharing)
+
 
 
